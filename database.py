@@ -24,7 +24,16 @@ class DataBaseModel:
                 )
             
     def add_produto(self,nome, preco, marca, categoria, especificacoes):
-         pass
+        cursor = self.connector.cursor()
+        query = """
+            INSERT INTO produtos (nome, preco, marca, categoria, especificacoes)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        valores = (nome, preco, marca, categoria, especificacoes)
+        cursor.execute(query, valores)
+        self.connector.commit()
+        cursor.close()
+
       
     def mostrar_database(self):
          return pd.read_sql('SELECT * from produtos', self.connector)

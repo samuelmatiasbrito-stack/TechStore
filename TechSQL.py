@@ -1,14 +1,15 @@
 
 from database import DataBaseModel
 databasemodel = DataBaseModel('tech_store')
+# print(databasemodel.mostrar_database())
 print(databasemodel.mostrar_database())
+inserir_produto = input('Inserir Produto? \n (1) Sim (2) Não: ')
+if inserir_produto == '1':
+    nome = input('Nome do produto: ')
+    preco = int(input('Preço do produto: '))
+    marca = input('Marca do produto: ')
+    categoria = input('Categoria do produto: ')
+    especificacoes = input('Especificações do produto: ')
+    databasemodel.add_produto(nome, preco, marca, categoria, especificacoes)
+    print('Produto adicionado')
 print(databasemodel.mostrar_database())
-
-#     print('DataBase carregada')
-#     opcao = input('(1) Exportar para Excel \n (2) Adicionar novo produto \n (3) Conferir produto específico: ')
-#     if opcao == '1':
-#         databaseexcelname = input('Nome do Arquivo: ')
-#         print('Exportando...')
-#         databasemodel.export_excel(databaseexcelname)
-#         pass
-#     elif opcao == '2':
