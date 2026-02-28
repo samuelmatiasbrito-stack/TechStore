@@ -1,8 +1,6 @@
 import mysql.connector
-import json
+import os
 import pandas as pd
-with open("userpassword.json", "r") as locked:
-    userpassword = json.load(locked)
 
 class DataBaseModel:
     
@@ -14,14 +12,12 @@ class DataBaseModel:
         return self.database.to_excel(f'{nome}.xlsx', sheet_name='DataBase', header=False)
     
     def obter_connector(self):
-            with open('userpassword.json', 'r') as locked:
-                userpassword = json.load(locked)
-                return mysql.connector.connect(
-                    host = 'localhost',
-                    user = userpassword['USER'],
-                    password = userpassword['PASS'],
-                    database = self.database
-                )
+        return mysql.connector.connect(
+            host = 'localhost',
+            user = os.getenv('USER'),
+            password = os.getenv('PASSWORD'),
+            database = self.database
+        )
             
     def add_produto(self,nome, preco, marca, categoria, especificacoes):
         cursor = self.connector.cursor()
