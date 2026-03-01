@@ -10,7 +10,12 @@ class DataBaseModel:
         self.cursor = self.connector.cursor()
 
     def export_excel(self, nome):
-        return self.database.to_excel(f'{nome}.xlsx', sheet_name='DataBase', header=False)
+        return self.mostrar_database().to_excel(f'{nome}.xlsx', sheet_name='DataBase', header=False)
+    
+    def mostrar_produto_especifico(self, referencia):
+        #  return pd.read_sql(f'SELECT * from produtos WHERE = %s',(referencia, self.connector))
+        return self.cursor.execute("SELECT * FROM produtos WHERE = %s", (referencia,))
+
     
     def obter_connector(self):
         return mysql.connector.connect(
@@ -31,19 +36,17 @@ class DataBaseModel:
         self.cursor.close()
 
     def deletar_produto(self, referencia):
-            self.cursor.execute("SELECT * FROM produtos WHERE referencia = %s", (referencia,))
+            self.cursor.execute("SELECT * FROM produtos WHERE = %s", (referencia,))
             produto = self.cursor.fetchone()
 
             if produto:
-                print('Produto encontrado:', produto)
-
-                query = 'DELETE FROM produtos WHERE referencia = %s'
+                query = 'DELETE FROM produtos WHERE id = %s'
                 self.cursor.execute(query, (referencia,))
-                self.cursor.commit()
+                self.connector.commit()
 
-                print(self.cursor.rowcount, 'produto removido')
+                return(self.cursor.rowcount, 'produto removido')
             else:
-                print('Nenhum produto encontrado com a referência:', referencia)
+                return f'Nenhum produto encontrado com a referência: {referencia}'
       
     def mostrar_database(self):
          return pd.read_sql('SELECT * from produtos', self.connector)
