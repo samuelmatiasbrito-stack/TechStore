@@ -1,8 +1,8 @@
 from database import DataBaseModel
 databasemodel = DataBaseModel('tech_store')
 print(f'BASE DOS PRODUTOS TECH STORE \n {databasemodel.mostrar_database()}')
-inserir_produto = input('Inserir Produto? \n (1) Sim (2) Não: ')
-if inserir_produto == '1':
+question = input('(1) Inserir Produto \n (2) Deletar Produto: ')
+if question == '1':
     nome = input('Nome do produto: ')
     preco = int(input('Preço do produto: '))
     marca = input('Marca do produto: ')
