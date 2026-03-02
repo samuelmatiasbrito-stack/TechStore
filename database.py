@@ -9,8 +9,17 @@ class DataBaseModel:
         self.connector = self.obter_connector()
         self.cursor = self.connector.cursor()
 
-    def export_excel(self, nome):
+    def export_to_excel(self, nome):
         return self.mostrar_database().to_excel(f'{nome}.xlsx', sheet_name='DataBase', header=False)
+    
+    def exportar_excel_question(self):
+        export = input('Exportar para Excel? \n (1) Sim (2) Não: ')
+        if export == '1':
+            name = input('Nome do arquivo: ')
+            self.export_to_excel(name)
+            print('Planilha exportada com sucesso')
+
+
     
     def mostrar_produto_especifico(self, ref):
         query = "SELECT * FROM produtos WHERE nome LIKE %s"
@@ -35,14 +44,13 @@ class DataBaseModel:
         self.cursor.close()
 
     def deletar_produto(self, referencia):
-            self.cursor.execute("SELECT * FROM produtos WHERE id = %s", (referencia,))
+            self.cursor.execute("SELECT * FROM produtos WHERE id = %s", (referencia))
             produto = self.cursor.fetchone()
 
             if produto:
                 query = 'DELETE FROM produtos WHERE id = %s'
                 self.cursor.execute(query, (referencia,))
                 self.connector.commit()
-
                 return(self.cursor.rowcount, 'produto removido')
             else:
                 return f'Nenhum produto encontrado com a referência: {referencia}'

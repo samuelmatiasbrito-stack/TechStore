@@ -20,23 +20,10 @@ while True:
         referencia = int(input('ID do produto a ser deletado: '))
         print(databasemodel.deletar_produto(referencia))
         print(databasemodel.mostrar_database())
-        export = input('Exportar para Excel? \n (1) Sim (2) Não: ')
-        if export == '1':
-            name = input('Nome do arquivo: ')
-            databasemodel.export_excel(name)
-            print('Planilha exportada com sucesso')
-            break
-        elif export == '2':
-            break
+        print(databasemodel.exportar_excel_question())
+
     elif question == '3':
         print(databasemodel.mostrar_database())
         referencia = input('Nome do produto específico: ')
         print(databasemodel.mostrar_produto_especifico(referencia))
-        export = input('Exportar para Excel? \n (1) Sim (2) Não: ')
-        if export == '1':
-            name = input('Nome do arquivo: ')
-            databasemodel.export_excel(name)
-            print('Planilha exportada com sucesso')
-            break
-        elif export == '2':
-            break
+        print(databasemodel.exportar_excel_question())
