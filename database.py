@@ -12,10 +12,9 @@ class DataBaseModel:
     def export_excel(self, nome):
         return self.mostrar_database().to_excel(f'{nome}.xlsx', sheet_name='DataBase', header=False)
     
-    def mostrar_produto_especifico(self, referencia):
-        #  return pd.read_sql(f'SELECT * from produtos WHERE = %s',(referencia, self.connector))
-        return self.cursor.execute("SELECT * FROM produtos WHERE = %s", (referencia,))
-
+    def mostrar_produto_especifico(self, ref):
+        query = "SELECT * FROM produtos WHERE nome LIKE %s"
+        return pd.read_sql(query, self.connector, params=(f"%{ref}%",))
     
     def obter_connector(self):
         return mysql.connector.connect(
@@ -36,7 +35,7 @@ class DataBaseModel:
         self.cursor.close()
 
     def deletar_produto(self, referencia):
-            self.cursor.execute("SELECT * FROM produtos WHERE = %s", (referencia,))
+            self.cursor.execute("SELECT * FROM produtos WHERE id = %s", (referencia,))
             produto = self.cursor.fetchone()
 
             if produto:
