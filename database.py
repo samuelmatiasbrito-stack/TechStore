@@ -47,20 +47,20 @@ class DataBaseModel:
         self.cursor.close()
         print('Produto adicionado')
 
-
-    def add_cliente_dados_pessoais(self,nome, preco, marca, categoria, especificacoes):
+    def add_cliente_dados_pessoais(self,nome, endereco, contato, email):
         query = """
-            INSERT INTO produtos (nome, preco, marca, categoria, especificacoes)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO produtos (nome, endereco, contato, email)
+            VALUES (%s, %s, %s, %s)
         """
-        valores = (nome, preco, marca, categoria, especificacoes)
+        valores = (nome, endereco, contato, email)
         self.cursor.execute(query, valores)
         self.connector.commit()
         self.cursor.close()
 
-    def add_venderproduto(self):
+    def venderproduto(self):
         export = input('Vender produto? \n (1) Sim | (2) Não: ')
         if export == '1':
+            self.add_cliente_dados_pessoais()
             produto = input('ID do produto a ser vendido: ')
             nome_cliente = input('Nome do cliente: ')
             data_compra = input('Data da compra (DD/MM/AAAA): ')

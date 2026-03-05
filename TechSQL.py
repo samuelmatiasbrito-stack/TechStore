@@ -11,15 +11,12 @@ while True:
 
     elif question == '2':
         print(databasemodel.mostrar_database())
-        referencia = int(input('ID do produto a ser deletado: '))
-        print(databasemodel.deletar_produto(referencia))
+        print(databasemodel.deletar_produto())
         print(databasemodel.mostrar_database())
         print(databasemodel.exportar_excel_question())
 
     elif question == '3':
         referencia = input('Nome do produto específico: ')
         print(databasemodel.mostrar_produto_especifico(referencia))
-        print(databasemodel.add_venderproduto())
+        print(databasemodel.venderproduto())
         print(databasemodel.exportar_excel_question())
-    
-    elif question == '4':
