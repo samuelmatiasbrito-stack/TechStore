@@ -3,15 +3,9 @@ databasemodel = DataBaseModel('tech_store')
 
 while True:
     print(f'BASE DOS PRODUTOS TECH STORE')
-    question = input('(1) Inserir Produto (2) Deletar Produto (3) Ver produtos específicos: ')
+    question = input('(1) Inserir Produto (2) Deletar Produto (3) Consultar produtos específicos')
     if question == '1':
-        nome = input('Nome do produto: ')
-        preco = int(input('Preço do produto: '))
-        marca = input('Marca do produto: ')
-        categoria = input('Categoria do produto: ')
-        especificacoes = input('Especificações do produto: ')
-        databasemodel.add_produto(nome, preco, marca, categoria, especificacoes)
-        print('Produto adicionado')
+        databasemodel.add_produto()
         print(databasemodel.mostrar_database())
         break
 
@@ -23,7 +17,9 @@ while True:
         print(databasemodel.exportar_excel_question())
 
     elif question == '3':
-        print(databasemodel.mostrar_database())
         referencia = input('Nome do produto específico: ')
         print(databasemodel.mostrar_produto_especifico(referencia))
+        print(databasemodel.add_venderproduto())
         print(databasemodel.exportar_excel_question())
+    
+    elif question == '4':
