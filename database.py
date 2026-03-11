@@ -20,7 +20,7 @@ class DataBaseModel:
             print('Planilha exportada com sucesso')
 
     def mostrar_produto_especifico(self, ref):
-        query = "SELECT * FROM produtos WHERE nome LIKE %s"
+        query = "SELECT * FROM produtos WHERE produto LIKE %s"
         return pd.read_sql(query, self.connector, params=(f"%{ref}%",))
     
     def obter_connector(self):
@@ -38,7 +38,7 @@ class DataBaseModel:
         categoria = input('Categoria do produto: ')
         especificacoes = input('Especificações do produto: ')
         query = """
-            INSERT INTO produtos (nome, preco, marca, categoria, especificacoes)
+            INSERT INTO produtos (produto, preco, marca, categoria, especificacoes)
             VALUES (%s, %s, %s, %s, %s)
         """
         valores = (nome, preco, marca, categoria, especificacoes)
@@ -47,12 +47,16 @@ class DataBaseModel:
         self.cursor.close()
         print('Produto adicionado')
 
-    def add_cliente_dados_pessoais(self,nome, endereco, contato, email):
+    def add_cliente_dados_pessoais(self,nome_cliente, endereco, contato, email):
+        nome_cliente = input('Nome do cliente: ')
+        endereco = input('Endereço: ')
+        contato = input('Contato: ')
+        email = input('Email: ')
         query = """
-            INSERT INTO produtos (nome, endereco, contato, email)
+            INSERT INTO clientes_informacoes (nome, endereco, contato, email)
             VALUES (%s, %s, %s, %s)
         """
-        valores = (nome, endereco, contato, email)
+        valores = (nome_cliente, endereco, contato, email)
         self.cursor.execute(query, valores)
         self.connector.commit()
         self.cursor.close()
@@ -61,16 +65,15 @@ class DataBaseModel:
         export = input('Vender produto? \n (1) Sim | (2) Não: ')
         if export == '1':
             self.add_cliente_dados_pessoais()
-            produto = input('ID do produto a ser vendido: ')
-            nome_cliente = input('Nome do cliente: ')
+            id_produto = input('ID do produto a ser vendido: ')
             data_compra = input('Data da compra (DD/MM/AAAA): ')
-            self.deletar_produto(produto)
-            print('Produto vendido com sucesso, Cliente adicionado ao sistema')
+            # self.deletar_produto(id_produto)
+            print('Produto vendido com sucesso')
             query = """
-                INSERT INTO clientes_produtos (nome, produto, datacompra)
-            VALUES (%s, %s, STR_TO_DATE(%s, '%d/%m/%y'))
+                INSERT INTO clientes_produtos (id_produto, data_compra)
+            VALUES (%s, STR_TO_DATE(%s, '%d/%m/%y'))
             """
-            valores = (nome_cliente, produto, data_compra)
+            valores = (id_produto, data_compra)
             self.cursor.execute(query, valores)
             self.connector.commit()
             self.cursor.close()
