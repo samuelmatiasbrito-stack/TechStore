@@ -44,10 +44,9 @@ class DataBaseModel:
         valores = (nome, preco, marca, categoria, especificacoes)
         self.cursor.execute(query, valores)
         self.connector.commit()
-        self.cursor.close()
         print('Produto adicionado')
 
-    def add_cliente_dados_pessoais(self,nome_cliente, endereco, contato, email):
+    def add_cliente_dados_pessoais(self):
         nome_cliente = input('Nome do cliente: ')
         endereco = input('Endereço: ')
         contato = input('Contato: ')
@@ -59,31 +58,36 @@ class DataBaseModel:
         valores = (nome_cliente, endereco, contato, email)
         self.cursor.execute(query, valores)
         self.connector.commit()
-        self.cursor.close()
 
     def venderproduto(self):
         export = input('Vender produto? \n (1) Sim | (2) Não: ')
         if export == '1':
             self.add_cliente_dados_pessoais()
+            id_cliente = self.cursor.lastrowid
             id_produto = input('ID do produto a ser vendido: ')
+            query_check = "SELECT produto FROM produtos WHERE id_produto = %s"
+            self.cursor.execute(query_check, (id_produto))
+            produto = self.cursor.fetchone()
+            if not produto:
+                print(f"Nenhum produto encontrado com o ID: {id_produto}")
+                return   
+
             data_compra = input('Data da compra (DD/MM/AAAA): ')
-            # self.deletar_produto(id_produto)
             print('Produto vendido com sucesso')
             query = """
-                INSERT INTO clientes_produtos (id_produto, data_compra)
+                INSERT INTO clientes_produtos (id_produto, id_cliente, data_compra)
             VALUES (%s, STR_TO_DATE(%s, '%d/%m/%y'))
             """
-            valores = (id_produto, data_compra)
+            valores = (id_produto, id_cliente, data_compra)
             self.cursor.execute(query, valores)
             self.connector.commit()
-            self.cursor.close()
 
     def deletar_produto(self, referencia):
-            self.cursor.execute("SELECT * FROM produtos WHERE id = %s", (referencia))
+            self.cursor.execute("SELECT * FROM produtos WHERE id_produto = %s", (referencia))
             produto = self.cursor.fetchone()
 
             if produto:
-                query = 'DELETE FROM produtos WHERE id = %s'
+                query = 'DELETE FROM produtos WHERE id.produto = %s'
                 self.cursor.execute(query, (referencia,))
                 self.connector.commit()
                 return(self.cursor.rowcount, 'produto removido')
