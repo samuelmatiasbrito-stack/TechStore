@@ -16,7 +16,6 @@ while True:
         print(databasemodel.exportar_excel_question())
 
     elif question == '3':
-        referencia = input('Nome do produto específico: ')
-        print(databasemodel.mostrar_produto_especifico(referencia))
-        print(databasemodel.venderproduto()) # adicionar produto antes e criar tabela somente com id produto e id cliente
+        print(databasemodel.mostrar_produto_especifico())
+        print(databasemodel.venderproduto())
         print(databasemodel.exportar_excel_question())

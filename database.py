@@ -1,3 +1,5 @@
+from weakref import ref
+
 import mysql.connector
 import os
 import pandas as pd
@@ -19,9 +21,22 @@ class DataBaseModel:
             self.export_to_excel(name)
             print('Planilha exportada com sucesso')
 
-    def mostrar_produto_especifico(self, ref):
-        query = "SELECT * FROM produtos WHERE produto LIKE %s"
-        return pd.read_sql(query, self.connector, params=(f"%{ref}%",))
+    def mostrar_produto_especifico(self):
+        produto = input('Nome do produto específico: ')
+        if produto:
+            query = f"SELECT * FROM produtos WHERE produto LIKE '%{produto}%'"
+            pdread = pd.read_sql(query, self.obter_connector())
+            
+            if pdread.empty:
+                print("Produto não encontrado")
+                return self.mostrar_produto_especifico()
+
+            else:
+                return pdread
+        else:
+            print("Produto não encontrado")
+            return self.mostrar_produto_especifico()            
+        
     
     def obter_connector(self):
         return mysql.connector.connect(
@@ -66,7 +81,7 @@ class DataBaseModel:
             id_cliente = self.cursor.lastrowid
             id_produto = input('ID do produto a ser vendido: ')
             query_check = "SELECT produto FROM produtos WHERE id_produto = %s"
-            self.cursor.execute(query_check, (id_produto))
+            self.cursor.execute(query_check, (id_produto,))
             produto = self.cursor.fetchone()
             if not produto:
                 print(f"Nenhum produto encontrado com o ID: {id_produto}")
