@@ -63,6 +63,7 @@ class DataBaseModel:
 
     def add_cliente_dados_pessoais(self):
         nome_cliente = input('Nome do cliente: ')
+        self.nomecliente = nome_cliente
         endereco = input('Endereço: ')
         contato = input('Contato: ')
         email = input('Email: ')
@@ -73,29 +74,32 @@ class DataBaseModel:
         valores = (nome_cliente, endereco, contato, email)
         self.cursor.execute(query, valores)
         self.connector.commit()
+        return self.cursor.lastrowid
+
+
 
     def venderproduto(self):
         export = input('Vender produto? \n (1) Sim | (2) Não: ')
         if export == '1':
-            self.add_cliente_dados_pessoais()
-            id_cliente = self.cursor.lastrowid
+            id_cliente = self.add_cliente_dados_pessoais()
             id_produto = input('ID do produto a ser vendido: ')
-            query_check = "SELECT produto FROM produtos WHERE id_produto = %s"
-            self.cursor.execute(query_check, (id_produto,))
+            query_checar_produto = "SELECT produto FROM produtos WHERE id_produto = %s"
+            self.cursor.execute(query_checar_produto, (id_produto,))
             produto = self.cursor.fetchone()
             if not produto:
                 print(f"Nenhum produto encontrado com o ID: {id_produto}")
                 return   
-
             data_compra = input('Data da compra (DD/MM/AAAA): ')
             print('Produto vendido com sucesso')
             query = """
                 INSERT INTO clientes_produtos (id_produto, id_cliente, data_compra)
-            VALUES (%s, STR_TO_DATE(%s, '%d/%m/%y'))
+                VALUES (%s, %s, STR_TO_DATE(%s, '%d/%m/%Y'))
             """
             valores = (id_produto, id_cliente, data_compra)
             self.cursor.execute(query, valores)
             self.connector.commit()
+            print('Produto vendido com sucesso')
+
 
     def deletar_produto(self, referencia):
             self.cursor.execute("SELECT * FROM produtos WHERE id_produto = %s", (referencia))
