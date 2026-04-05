@@ -1,5 +1,7 @@
 from database import DataBaseModel
+from database import ClienteModel
 databasemodel = DataBaseModel('tech_store')
+clientemodel = ClienteModel('tech_store')
 
 while True:
     print(f'BASE DOS PRODUTOS TECH STORE')

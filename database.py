@@ -1,4 +1,3 @@
-from weakref import ref
 
 import mysql.connector
 import os
@@ -119,3 +118,6 @@ class DataBaseModel:
     def __del__(self):
          self.connector.close()
          print('Conexão encerrada')
+
+class ClienteModel:
+    def 
