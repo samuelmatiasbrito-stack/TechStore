@@ -3,7 +3,16 @@ import mysql.connector
 import os
 import pandas as pd
 
-class DataBaseModel:
+class ClienteModel:
+    def __init__(self, nome, contato):
+        if not nome.isalpha():
+            return print("O nome deve conter apenas letras")
+        if not contato.isdigit():
+            return print("O contato deve conter apenas dígitos")
+        self.nome = nome
+        self.contato = contato
+
+class DataBaseModel():
     
     def __init__(self, arquivo):
         self.database = arquivo
@@ -61,26 +70,31 @@ class DataBaseModel:
         print('Produto adicionado')
 
     def add_cliente_dados_pessoais(self):
-        nome_cliente = input('Nome do cliente: ')
-        self.nomecliente = nome_cliente
-        endereco = input('Endereço: ')
-        contato = input('Contato: ')
-        email = input('Email: ')
-        query = """
-            INSERT INTO clientes_informacoes (nome, endereco, contato, email)
-            VALUES (%s, %s, %s, %s)
-        """
-        valores = (nome_cliente, endereco, contato, email)
-        self.cursor.execute(query, valores)
-        self.connector.commit()
-        return self.cursor.lastrowid
+        try:
+            nome_cliente = input('Nome do cliente: ')
+            self.nomecliente = nome_cliente
+            endereco = input('Endereço: ')
+            contato = input('Contato: ')
+            email = input('Email: ')
+            cliente = ClienteModel(nome_cliente, contato)
+            query = """
+                INSERT INTO clientes_informacoes (nome, endereco, contato, email)
+                VALUES (%s, %s, %s, %s)
+            """
+            valores = (cliente.nome, endereco, cliente.contato, email)
+            self.cursor.execute(query, valores)
+            self.connector.commit()
+            return self.cursor.lastrowid
+        except:
+            print('Erro ao adicionar cliente, tente novamente')
+            return self.add_cliente_dados_pessoais()
 
 
 
     def venderproduto(self):
         export = input('Vender produto? \n (1) Sim | (2) Não: ')
         if export == '1':
-            id_cliente = self.add_cliente_dados_pessoais()
+            id_cliente = self.add_cliente_dados_pessoais()                                       
             id_produto = input('ID do produto a ser vendido: ')
             query_checar_produto = "SELECT produto FROM produtos WHERE id_produto = %s"
             self.cursor.execute(query_checar_produto, (id_produto,))
@@ -115,9 +129,24 @@ class DataBaseModel:
     def mostrar_database(self):
          return pd.read_sql('SELECT * from produtos', self.connector)
     
+    def exportar_vendas_excel(self, nome_arquivo='vendas.xlsx'):
+        query = """
+        SELECT
+            clientes_informacoes.nome,
+            produtos.produto,
+            produtos.preco,
+            clientes_produtos.data_compra
+        FROM clientes_informacoes
+        INNER JOIN clientes_produtos
+            ON clientes_informacoes.id_cliente = clientes_produtos.id_cliente
+        INNER JOIN produtos
+            ON clientes_produtos.id_produto = produtos.id_produto;
+        """
+        basevendas = pd.read_sql(query, self.connector)
+        basevendas.to_excel(nome_arquivo, sheet_name='Vendas', header=False)
+        print('Arquivo exportado com sucesso')
+
     def __del__(self):
          self.connector.close()
          print('Conexão encerrada')
 
-class ClienteModel:
-    def 
